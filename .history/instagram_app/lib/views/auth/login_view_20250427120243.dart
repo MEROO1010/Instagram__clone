@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_app/views/home_view.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 
-class LoginView extends StatelessWidget {
+import 'signup_view.dart';
+
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  LoginView({super.key});
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -22,32 +30,28 @@ class LoginView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Instagram logo
+                // Logo
                 Image.asset('assets/logo.png', height: 64),
-
                 const SizedBox(height: 64),
 
-                // Email field
+                // Email TextField
                 TextField(
                   controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
-                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
+                    contentPadding: const EdgeInsets.all(16),
                   ),
                 ),
-
                 const SizedBox(height: 16),
 
-                // Password field
+                // Password TextField
                 TextField(
                   controller: passwordController,
                   obscureText: true,
@@ -55,29 +59,49 @@ class LoginView extends StatelessWidget {
                     hintText: 'Password',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
-                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
+                    contentPadding: const EdgeInsets.all(16),
                   ),
                 ),
-
                 const SizedBox(height: 24),
 
-                // Login button
+                // Login Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      await auth.login(
-                        emailController.text,
-                        passwordController.text,
-                      );
-                    },
+                    onPressed:
+                        _isLoading
+                            ? null
+                            : () async {
+                              setState(() => _isLoading = true);
+
+                              bool success = await auth.login(
+                                emailController.text.trim(),
+                                passwordController.text.trim(),
+                              );
+
+                              setState(() => _isLoading = false);
+
+                              if (success) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomeView(),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Invalid credentials. Please try again.',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -85,13 +109,25 @@ class LoginView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('Log In', style: TextStyle(fontSize: 16)),
+                    child:
+                        _isLoading
+                            ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Log In',
+                              style: TextStyle(fontSize: 16),
+                            ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
-                // Divider with OR
+                // OR Divider
                 Row(
                   children: [
                     const Expanded(child: Divider(thickness: 1)),
@@ -102,17 +138,19 @@ class LoginView extends StatelessWidget {
                     const Expanded(child: Divider(thickness: 1)),
                   ],
                 ),
-
                 const SizedBox(height: 20),
 
-                // Sign Up link
+                // Sign Up Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignupView()),
+                        );
                       },
                       child: const Text('Sign up'),
                     ),

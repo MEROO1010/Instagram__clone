@@ -38,6 +38,4 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String text, String text2) async {}
-
-  Future<void> loadUser() async {}
 }

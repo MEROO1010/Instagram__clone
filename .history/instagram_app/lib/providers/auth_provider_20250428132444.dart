@@ -36,8 +36,4 @@ class AuthProvider with ChangeNotifier {
       throw Exception(responseData['message']);
     }
   }
-
-  Future<void> login(String text, String text2) async {}
-
-  Future<void> loadUser() async {}
 }
