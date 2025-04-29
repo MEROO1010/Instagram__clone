@@ -28,18 +28,19 @@ class _SignupViewState extends State<SignupView> {
       );
 
       if (success && authProvider.isAuthenticated) {
-        Navigator.of(
+        Navigator.pushReplacement(
           context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeView()));
+          MaterialPageRoute(builder: (_) => const HomeView()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(authProvider.errorMessage ?? 'Signup failed')),
+          const SnackBar(content: Text('Signup failed. Please try again.')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Signup error: ${e.toString()}')));
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
 
     setState(() => _isLoading = false);
@@ -55,7 +56,7 @@ class _SignupViewState extends State<SignupView> {
             const SizedBox(height: 80),
             Center(
               child: Image.asset(
-                'assets/images/Instagram_Logo.png',
+                'assets/images/instagram_logo.png',
                 width: 120,
               ),
             ),

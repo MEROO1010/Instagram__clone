@@ -13,8 +13,7 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
-    // Ensure the NDK version is correctly set in the app-level build.gradle file
-        project.evaluationDependsOn(":app")
+    project.evaluationDependsOn(":app")
 }
 
 tasks.register<Delete>("clean") {

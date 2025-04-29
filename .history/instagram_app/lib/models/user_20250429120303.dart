@@ -4,7 +4,6 @@ class UserModel {
   final String email;
   final String? avatar;
   final String? bio;
-  final List<String> followers;
 
   UserModel({
     required this.id,
@@ -12,7 +11,6 @@ class UserModel {
     required this.email,
     this.avatar,
     this.bio,
-    required this.followers,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -22,7 +20,6 @@ class UserModel {
       email: json['email'],
       avatar: json['avatar'],
       bio: json['bio'],
-      followers: List<String>.from(json['followers'] ?? []),
     );
   }
 }

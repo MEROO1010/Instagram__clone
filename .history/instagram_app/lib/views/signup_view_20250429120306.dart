@@ -55,7 +55,7 @@ class _SignupViewState extends State<SignupView> {
             const SizedBox(height: 80),
             Center(
               child: Image.asset(
-                'assets/images/Instagram_Logo.png',
+                'assets/images/instagram_logo.png',
                 width: 120,
               ),
             ),

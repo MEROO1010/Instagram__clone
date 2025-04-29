@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/Instagram_Logo.png', width: 150),
+              Image.asset('assets/images/instagram_logo.png', width: 150),
               const SizedBox(height: 24),
               const CircularProgressIndicator(),
               const SizedBox(height: 50),

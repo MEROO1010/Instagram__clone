@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/user_provider.dart';
+import '../models/user.dart';
 
 class ProfileView extends StatelessWidget {
   final String userId;
@@ -10,35 +11,28 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final auth = Provider.of<AuthProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
-
-    final currentUserId = auth.user?.id;
-    if (currentUserId == null) {
-      return const Scaffold(
-        body: Center(child: Text('Please log in to view the profile.')),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: FutureBuilder<void>(
-        future: userProvider.fetchUser(userId, auth.token!),
+      body: FutureBuilder(
+        future: userProvider.fetchUser(userId, auth.token!), // Use token here
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError) {
+          if (snapshot.error != null) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          final user = userProvider.selectedUser;
-          if (user == null) {
-            return const Center(child: Text('User not found.'));
-          }
+          User user = userProvider.selectedUser!;
 
-          final isFollowing = user.followers.contains(currentUserId);
+          // Check if the current user is following this profile
+          bool isFollowing = user.followers.contains(
+            auth.user,
+          ); // Check if the logged-in user is in the followers list
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -46,8 +40,9 @@ class ProfileView extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(user.avatar ?? ''),
-                  backgroundColor: Colors.grey.shade300,
+                  backgroundImage: NetworkImage(
+                    user.avatar ?? '',
+                  ), // Display the user's avatar
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -64,23 +59,25 @@ class ProfileView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                if (currentUserId != user.id)
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        if (isFollowing) {
-                          await userProvider.unfollow(user.id, auth.token!);
-                        } else {
-                          await userProvider.follow(user.id, auth.token!);
-                        }
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Action failed: $e')),
-                        );
-                      }
-                    },
-                    child: Text(isFollowing ? 'Unfollow' : 'Follow'),
-                  ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (isFollowing) {
+                      await userProvider.unfollow(
+                        user.id,
+                        auth.token!,
+                      ); // Unfollow if already following
+                    } else {
+                      await userProvider.follow(
+                        user.id,
+                        auth.token!,
+                      ); // Follow if not already following
+                    }
+
+                    // Refresh the profile after follow/unfollow action
+                    await userProvider.fetchUser(userId, auth.token!);
+                  },
+                  child: Text(isFollowing ? 'Unfollow' : 'Follow'),
+                ),
               ],
             ),
           );

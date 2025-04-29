@@ -1,28 +1,25 @@
-class UserModel {
+class User {
   final String id;
   final String username;
   final String email;
   final String? avatar;
   final String? bio;
-  final List<String> followers;
 
-  UserModel({
+  User({
     required this.id,
     required this.username,
     required this.email,
     this.avatar,
     this.bio,
-    required this.followers,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['_id'],
       username: json['username'],
       email: json['email'],
       avatar: json['avatar'],
       bio: json['bio'],
-      followers: List<String>.from(json['followers'] ?? []),
     );
   }
 }

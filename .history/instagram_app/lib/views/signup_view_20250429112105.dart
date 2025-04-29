@@ -7,7 +7,7 @@ class SignupView extends StatefulWidget {
   const SignupView({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  _SignupViewState createState() => _SignupViewState();
 }
 
 class _SignupViewState extends State<SignupView> {
@@ -21,27 +21,22 @@ class _SignupViewState extends State<SignupView> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     try {
-      final success = await authProvider.signup(
+      await authProvider.signup(
         _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-
-      if (success && authProvider.isAuthenticated) {
-        Navigator.of(
+      if (authProvider.isAuthenticated) {
+        Navigator.pushReplacement(
           context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeView()));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(authProvider.errorMessage ?? 'Signup failed')),
+          MaterialPageRoute(builder: (_) => const HomeView()),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Signup error: ${e.toString()}')));
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
-
     setState(() => _isLoading = false);
   }
 
@@ -55,7 +50,7 @@ class _SignupViewState extends State<SignupView> {
             const SizedBox(height: 80),
             Center(
               child: Image.asset(
-                'assets/images/Instagram_Logo.png',
+                'assets/images/instagram_logo.png',
                 width: 120,
               ),
             ),
@@ -80,14 +75,7 @@ class _SignupViewState extends State<SignupView> {
               onPressed: _isLoading ? null : _signup,
               child:
                   _isLoading
-                      ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Sign Up'),
             ),
             const SizedBox(height: 16),

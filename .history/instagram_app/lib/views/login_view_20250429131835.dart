@@ -61,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
             // Instagram Logo
             Center(
               child: Image.asset(
-                'assets/images/Instagram_Logo.png', // Ensure the logo is correctly placed
+                'assets/images/instagram_Logo.png', // Ensure the logo is correctly placed
                 width: 120, // Adjust the width as needed
               ),
             ),

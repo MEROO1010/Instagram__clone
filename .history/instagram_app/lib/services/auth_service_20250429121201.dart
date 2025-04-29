@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:instagram_app/models/user.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:5000/api/auth';
+  final String baseUrl = 'http://localhost:5000/api/auth'; // Adjust for prod
 
   Future<AuthResponse> signup(
     String username,

@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:instagram_app/models/user.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:5000/api/auth';
+  final String baseUrl =
+      'http://10.0.2.2:5000/api/auth'; // if running locally on Android emulator
 
   Future<AuthResponse> signup(
     String username,

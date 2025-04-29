@@ -82,6 +82,4 @@ class AuthProvider with ChangeNotifier {
     _isAuthenticated = false;
     notifyListeners();
   }
-
-  Future<void> loadUser() async {}
 }

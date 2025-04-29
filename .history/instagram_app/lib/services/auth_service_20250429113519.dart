@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:instagram_app/models/user.dart';
+import '../models/user.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:5000/api/auth';
+  final String baseUrl =
+      'http://localhost:5000/api/auth'; // Replace with your backend URL
 
   Future<AuthResponse> signup(
     String username,
@@ -23,12 +24,11 @@ class AuthService {
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
       return AuthResponse(
-        user: UserModel.fromJson(data['user']),
+        user: User.fromJson(data['user']),
         token: data['token'],
       );
     } else {
-      final error = _parseError(response);
-      throw Exception(error);
+      throw Exception(jsonDecode(response.body)['message']);
     }
   }
 
@@ -42,27 +42,17 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return AuthResponse(
-        user: UserModel.fromJson(data['user']),
+        user: User.fromJson(data['user']),
         token: data['token'],
       );
     } else {
-      final error = _parseError(response);
-      throw Exception(error);
-    }
-  }
-
-  String _parseError(http.Response response) {
-    try {
-      final data = jsonDecode(response.body);
-      return data['message'] ?? 'Unexpected error occurred.';
-    } catch (_) {
-      return 'Unexpected error occurred.';
+      throw Exception(jsonDecode(response.body)['message']);
     }
   }
 }
 
 class AuthResponse {
-  final UserModel user;
+  final User user;
   final String token;
 
   AuthResponse({required this.user, required this.token});
