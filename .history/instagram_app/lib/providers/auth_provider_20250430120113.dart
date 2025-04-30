@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../models/user.dart';
+import 'package:instagram_app/models/user.dart';
 
 class AuthProvider with ChangeNotifier {
   UserModel? _user;
@@ -13,7 +13,8 @@ class AuthProvider with ChangeNotifier {
   UserModel? get user => _user;
   String? get token => _token;
 
-  final String _baseUrl = 'http://10.0.2.2:5000/api'; // For Android emulator
+  // Replace with your actual API base URL
+  final String _baseUrl = 'http://localhost:5000';
 
   Future<bool> signup(String username, String email, String password) async {
     final url = Uri.parse('$_baseUrl/auth/signup');
@@ -39,12 +40,10 @@ class AuthProvider with ChangeNotifier {
       } else {
         final data = jsonDecode(response.body);
         errorMessage = data['message'] ?? 'Signup failed';
-        notifyListeners(); // ADD THIS
         return false;
       }
     } catch (e) {
       errorMessage = 'An error occurred: $e';
-      notifyListeners(); // ADD THIS
       return false;
     }
   }
@@ -69,12 +68,10 @@ class AuthProvider with ChangeNotifier {
       } else {
         final data = jsonDecode(response.body);
         errorMessage = data['message'] ?? 'Login failed';
-        notifyListeners(); // ADD THIS
         return false;
       }
     } catch (e) {
       errorMessage = 'An error occurred: $e';
-      notifyListeners(); // ADD THIS
       return false;
     }
   }
@@ -86,7 +83,5 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadUser() async {
-    // For auto-login in future
-  }
+  Future<void> loadUser() async {}
 }
